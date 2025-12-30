@@ -28,7 +28,11 @@ header{padding:26px;text-align:center;font-size:30px;font-weight:600;background:
 .big-reset{width:100%;padding:22px;font-size:22px;border-radius:36px;border:none;background:linear-gradient(135deg,#fb7185,#f43f5e);color:white;font-weight:600;cursor:pointer;margin-top:28px;transition:0.2s}
 .big-reset:hover{opacity:0.9}
 .quote{text-align:center;font-size:36px;font-weight:500;color:#1f2937;margin:30px 0;font-family:'Gentle Calligraphy',cursive;line-height:1.4}
-.chart-container{background:#fff;border-radius:30px;padding:22px;box-shadow:0 14px 34px rgba(0,0,0,.08);margin-top:22px;text-align:center}
+.chart-container{background:#fff;border-radius:30px;padding:22px;box-shadow:0 14px 34px rgba(0,0,0,.08);margin-top:22px;text-align:left}
+.chart-bar{display:flex;align-items:center;margin:10px 0}
+.chart-bar span{width:120px;font-weight:600}
+.chart-bar div{flex:1;height:18px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin-left:12px}
+.chart-bar div div{height:100%;background:#6366f1;width:0%;}
 .hidden{display:none}
 </style>
 </head>
@@ -76,9 +80,11 @@ header{padding:26px;text-align:center;font-size:30px;font-weight:600;background:
   <!-- Reset all -->
   <button class="big-reset" onclick="resetAll()">Reset ALL Progress</button>
 
-  <!-- Completion chart -->
+  <!-- Subject-wise progress graph -->
   <div class="chart-container">
-    <canvas id="completionChart" width="300" height="150"></canvas>
+    <div class="chart-bar"><span>Physics</span><div><div id="gPhysics"></div></div></div>
+    <div class="chart-bar"><span>Chemistry</span><div><div id="gChemistry"></div></div></div>
+    <div class="chart-bar"><span>Maths</span><div><div id="gMaths"></div></div></div>
   </div>
 
 </div>
@@ -92,7 +98,6 @@ header{padding:26px;text-align:center;font-size:30px;font-weight:600;background:
   <button onclick="goHome()" class="back-btn">⬅ Back to Home</button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const defaultData={
 physics:["U & D","Vectors","Kinematics-1D","Kinematics-2D","NLM","Friction","Circular motion","WPE","Center of Mass","Rotational Mechanics","Gravitation","SHM","Calorimetry","Elasticity","Thermal Expansion","Heat transfer","KTG","Thermodynamics","Wave on string","Sound waves","Fluid Mechanics","Physical World","Electrostatics","Current Electricity","Capacitance","MEC","Magnetism","EMI","AC","Atomic Structure","Dual Nature","Nuclear physics","Radioactivity","Ray Optics","EM Waves","Wave Optics","Errors","Semiconductor","Communication System"],
@@ -102,10 +107,9 @@ maths:["Logarithm","Trigonometric Ratios & Identities","Quadratic Equation","Seq
 let data=JSON.parse(localStorage.getItem('chaptersData'))||defaultData;
 let currentSub="";
 
-// Save data
 function save(){localStorage.setItem('chaptersData',JSON.stringify(data))}
 
-// Open subject page
+// Subject page
 function openSub(s){
   currentSub=s;
   home.classList.add('hidden');
@@ -126,16 +130,16 @@ function renderChapters(){
     const cb=document.createElement('input');
     cb.type='checkbox';
     cb.checked=localStorage.getItem(currentSub+ch)==='1';
-    cb.onchange=()=>{localStorage.setItem(currentSub+ch,cb.checked?'1':'');updateProgress(); renderChart();};
+    cb.onchange=()=>{localStorage.setItem(currentSub+ch,cb.checked?'1':'');updateProgress(); renderGraph();};
     row.append(name,cb);
     box.append(row);
   });
 }
 
-// Go back home
-function goHome(){subject.classList.add('hidden');home.classList.remove('hidden');updateProgress(); renderChart();}
+// Go home
+function goHome(){subject.classList.add('hidden');home.classList.remove('hidden');updateProgress(); renderGraph();}
 
-// Update progress bars
+// Progress bars
 function updateProgress(){
   [['physics','pBar','pText'],['chemistry','cBar','cText'],['maths','mBar','mText']].forEach(([s,b,t])=>{
     let done=0;
@@ -144,44 +148,31 @@ function updateProgress(){
     document.getElementById(b).style.width=pct+'%';
     document.getElementById(t).innerText=`${done}/${data[s].length} chapters (${pct}%)`;
   });
+  renderGraph();
 }
 
-// Reset single subject
-function resetSubject(s){data[s].forEach(c=>localStorage.removeItem(s+c));updateProgress(); renderChart();}
+// Reset single
+function resetSubject(s){data[s].forEach(c=>localStorage.removeItem(s+c));updateProgress();}
 
 // Reset all
 function resetAll(){if(confirm('Are you sure you want to reset all progress?')){localStorage.clear();location.reload()}}
 
-// Doughnut chart
-function renderChart(){
-  const ctx=document.getElementById('completionChart').getContext('2d');
-  const chartData={
-    labels:['Physics','Chemistry','Maths'],
-    datasets:[{
-      data:[
-        Math.round(data.physics.filter(c=>localStorage.getItem('physics'+c)==='1').length/data.physics.length*100),
-        Math.round(data.chemistry.filter(c=>localStorage.getItem('chemistry'+c)==='1').length/data.chemistry.length*100),
-        Math.round(data.maths.filter(c=>localStorage.getItem('maths'+c)==='1').length/data.maths.length*100)
-      ],
-      backgroundColor:['#6366f1','#22c55e','#d946ef'],
-      borderWidth:2
-    }]
-  };
-  if(window.completionChart) window.completionChart.destroy();
-  window.completionChart=new Chart(ctx,{type:'doughnut',data:chartData,options:{cutout:'60%',plugins:{legend:{position:'bottom'}}}});
+// Simple bottom graph
+function renderGraph(){
+  const phys=Math.round(data.physics.filter(c=>localStorage.getItem('physics'+c)==='1').length/data.physics.length*100);
+  const chem=Math.round(data.chemistry.filter(c=>localStorage.getItem('chemistry'+c)==='1').length/data.chemistry.length*100);
+  const maths=Math.round(data.maths.filter(c=>localStorage.getItem('maths'+c)==='1').length/data.maths.length*100);
+  document.getElementById('gPhysics').style.width=phys+'%';
+  document.getElementById('gChemistry').style.width=chem+'%';
+  document.getElementById('gMaths').style.width=maths+'%';
 }
 
-// Initial render
+// Initial
 updateProgress();
-renderChart();
 
-// Register service worker
+// Service Worker
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js').then(reg=>{
-      console.log('SW Registered',reg);
-    }).catch(err=>console.log('SW registration failed',err));
-  });
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js');});
 }
 </script>
 </body>
