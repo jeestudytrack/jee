@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Study Tracker</title>
+
+<title>JEE Study Tracker</title>
+
+<!-- Manifest -->
+<link rel="manifest" href="manifest.json">
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Gentle+Calligraphy&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -33,16 +37,14 @@ body{
   color:var(--text);
 }
 
-/* HEADER */
 header{
   padding:22px;
   text-align:center;
   font-size:22px;
   font-weight:600;
-  letter-spacing:0.5px;
 }
 
-/* QUOTE (ONLY calligraphy) */
+/* QUOTE — ONLY THIS USES CALLIGRAPHY */
 .quote{
   margin:28px 20px;
   padding:28px;
@@ -54,6 +56,7 @@ header{
   font-size:36px;
   line-height:1.6;
   color:#f8fafc;
+  letter-spacing:1px;
   box-shadow:0 20px 40px rgba(0,0,0,0.4);
 }
 
@@ -76,7 +79,6 @@ header{
   gap:10px;
 }
 
-/* Subject color dots */
 .section h2::before{
   content:'';
   width:10px;
@@ -88,7 +90,6 @@ header{
 .section.chemistry h2::before{background:var(--chem)}
 .section.maths h2::before{background:var(--math)}
 
-/* PROGRESS BAR */
 .progress{
   height:8px;
   background:#1f2937;
@@ -105,14 +106,11 @@ header{
   transition:width 0.35s ease;
 }
 
-/* CHAPTER */
 .chapter{
   display:flex;
-  align-items:flex-start;
   gap:12px;
   padding:8px 0;
   font-size:14px;
-  color:#e5e7eb;
 }
 
 .chapter input{
@@ -121,11 +119,6 @@ header{
   margin-top:2px;
 }
 
-.chapter span{
-  line-height:1.45;
-}
-
-/* GRAPH */
 .chartBox{
   margin:28px 20px 40px;
   padding:22px;
@@ -139,7 +132,7 @@ header{
 
 <body>
 
-<header>📘 Study Tracker</header>
+<header>📘 JEE Study Tracker</header>
 
 <div class="quote">
 “You can't go back and change the beginning,<br>
@@ -153,7 +146,7 @@ but you can start where you are and change the ending.”
 </div>
 
 <script>
-const data={
+const syllabus={
 Physics:[
 "U & D","Vectors","Kinematics-1D","Kinematics-2D","NLM","Friction",
 "Circular Motion","WPE","Center of Mass","Rotational Mechanics",
@@ -188,23 +181,31 @@ Maths:[
 ]
 };
 
-const container=document.getElementById("subjects");
+const box=document.getElementById("subjects");
 
-Object.keys(data).forEach(subject=>{
+Object.keys(syllabus).forEach(subject=>{
   const sec=document.createElement("div");
   sec.className=`section ${subject.toLowerCase()}`;
   sec.innerHTML=`<h2>${subject}</h2>
   <div class="progress"><span id="${subject}-bar"></span></div>`;
-  data[subject].forEach((c,i)=>{
-    const id=subject+i;
+
+  syllabus[subject].forEach((ch,i)=>{
     sec.innerHTML+=`
       <label class="chapter">
-        <input type="checkbox" id="${id}">
-        <span>${i+1}. ${c}</span>
+        <input type="checkbox" id="${subject+i}">
+        <span>${i+1}. ${ch}</span>
       </label>`;
   });
-  container.appendChild(sec);
+
+  box.appendChild(sec);
 });
+</script>
+
+<!-- SERVICE WORKER REGISTRATION -->
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
 </script>
 
 </body>
