@@ -3,210 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>JEE Study Tracker</title>
-
-<!-- Manifest -->
 <link rel="manifest" href="manifest.json">
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Gentle+Calligraphy&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Gentle+Calligraphy&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0b1020;
-  --card:#111827;
-  --border:#1f2937;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-
-  --phy:#6366f1;
-  --chem:#22c55e;
-  --math:#f59e0b;
-}
-
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:linear-gradient(180deg,#020617,#0b1020);
-  font-family:'Poppins',sans-serif;
-  color:var(--text);
-}
-
-header{
-  padding:22px;
-  text-align:center;
-  font-size:22px;
-  font-weight:600;
-}
-
-/* QUOTE — ONLY THIS USES CALLIGRAPHY */
-.quote{
-  margin:28px 20px;
-  padding:28px;
-  border-radius:24px;
-  background:linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));
-  border:1px solid var(--border);
-  text-align:center;
-  font-family:'Gentle Calligraphy',cursive;
-  font-size:36px;
-  line-height:1.6;
-  color:#f8fafc;
-  letter-spacing:1px;
-  box-shadow:0 20px 40px rgba(0,0,0,0.4);
-}
-
-/* SUBJECT CARD */
-.section{
-  margin:18px;
-  padding:18px;
-  border-radius:22px;
-  background:linear-gradient(180deg,#111827,#0f172a);
-  border:1px solid var(--border);
-  box-shadow:0 18px 45px rgba(0,0,0,0.45);
-}
-
-.section h2{
-  margin:0 0 14px;
-  font-size:18px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.section h2::before{
-  content:'';
-  width:10px;
-  height:10px;
-  border-radius:50%;
-}
-
-.section.physics h2::before{background:var(--phy)}
-.section.chemistry h2::before{background:var(--chem)}
-.section.maths h2::before{background:var(--math)}
-
-.progress{
-  height:8px;
-  background:#1f2937;
-  border-radius:999px;
-  overflow:hidden;
-  margin-bottom:16px;
-}
-
-.progress span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#6366f1,#22d3ee);
-  transition:width 0.35s ease;
-}
-
-.chapter{
-  display:flex;
-  gap:12px;
-  padding:8px 0;
-  font-size:14px;
-}
-
-.chapter input{
-  accent-color:#818cf8;
-  transform:scale(1.15);
-  margin-top:2px;
-}
-
-.chartBox{
-  margin:28px 20px 40px;
-  padding:22px;
-  border-radius:24px;
-  background:linear-gradient(180deg,#111827,#0f172a);
-  border:1px solid var(--border);
-  box-shadow:0 18px 45px rgba(0,0,0,0.45);
-}
+body{margin:0;font-family:Poppins,sans-serif;background:#f5f7fb;color:#1f2937;font-size:19px}
+header{padding:26px;text-align:center;font-size:30px;font-weight:600;background:#6366f1;color:white;border-radius:0 0 34px 34px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.container{padding:22px}
+.card{background:#ffffff;border-radius:30px;padding:22px;margin-bottom:26px;box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.subject-row{display:flex;gap:18px;margin:24px 0}
+.subject-row button{flex:1;padding:20px;font-size:22px;border:none;border-radius:34px;font-weight:600;cursor:pointer;color:white;transition:0.2s}
+.physics{background:#6366f1}
+.chemistry{background:#22c55e}
+.math{background:#d946ef}
+.progress{height:18px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin-top:10px}
+.progress div{height:100%;background:#6366f1;width:0%}
+.chapter-row{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;padding:14px 18px;margin:10px 0;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05);transition: transform 0.2s;font-size:20px}
+.chapter-row:hover{transform: translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.1);}
+.chapter-row input{width:28px;height:28px;accent-color:#6366f1;}
+.chapter-number{background:#6366f1;color:white;font-weight:600;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0;}
+.back-btn{margin-top:26px;padding:18px;font-size:20px;border-radius:30px;border:none;background:#6366f1;color:white;cursor:pointer;width:100%;transition:0.2s}
+.back-btn:hover{opacity:0.9}
+.big-reset{width:100%;padding:22px;font-size:22px;border-radius:36px;border:none;background:linear-gradient(135deg,#fb7185,#f43f5e);color:white;font-weight:600;cursor:pointer;margin-top:28px;transition:0.2s}
+.big-reset:hover{opacity:0.9}
+.quote{text-align:center;font-size:36px;font-weight:500;color:#1f2937;margin:30px 0;font-family:'Gentle Calligraphy',cursive;line-height:1.4}
+.chart-container{background:#fff;border-radius:30px;padding:22px;box-shadow:0 14px 34px rgba(0,0,0,.08);margin-top:22px;text-align:center}
+.hidden{display:none}
 </style>
 </head>
-
 <body>
-
 <header>📘 JEE Study Tracker</header>
 
-<div class="quote">
-“You can't go back and change the beginning,<br>
-but you can start where you are and change the ending.”
+<div class="container" id="home">
+
+  <!-- Quote Section -->
+  <div class="card">
+    <div class="quote">
+      "You can't go back and change the beginning, but you can start where you are and change the ending"
+    </div>
+  </div>
+
+  <!-- Subject Cards -->
+  <div class="card">
+    <b>⚡ Physics</b>
+    <div class="progress"><div id="pBar"></div></div>
+    <div id="pText"></div>
+    <button onclick="resetSubject('physics')">Reset Physics</button>
+  </div>
+
+  <div class="card">
+    <b>🧪 Chemistry</b>
+    <div class="progress"><div id="cBar"></div></div>
+    <div id="cText"></div>
+    <button onclick="resetSubject('chemistry')">Reset Chemistry</button>
+  </div>
+
+  <div class="card">
+    <b>📐 Mathematics</b>
+    <div class="progress"><div id="mBar"></div></div>
+    <div id="mText"></div>
+    <button onclick="resetSubject('maths')">Reset Maths</button>
+  </div>
+
+  <!-- Subject selection buttons -->
+  <div class="subject-row">
+    <button class="physics" onclick="openSub('physics')">⚡ Physics</button>
+    <button class="chemistry" onclick="openSub('chemistry')">🧪 Chemistry</button>
+    <button class="math" onclick="openSub('maths')">📐 Maths</button>
+  </div>
+
+  <!-- Reset all -->
+  <button class="big-reset" onclick="resetAll()">Reset ALL Progress</button>
+
+  <!-- Completion chart -->
+  <div class="chart-container">
+    <canvas id="completionChart" width="300" height="150"></canvas>
+  </div>
+
 </div>
 
-<div id="subjects"></div>
-
-<div class="chartBox">
-  <canvas id="completionChart"></canvas>
+<!-- Subject details page -->
+<div class="container hidden" id="subject">
+  <div class="top-bar">
+    <h2 id="subTitle"></h2>
+  </div>
+  <div id="chapters"></div>
+  <button onclick="goHome()" class="back-btn">⬅ Back to Home</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const syllabus={
-Physics:[
-"U & D","Vectors","Kinematics-1D","Kinematics-2D","NLM","Friction",
-"Circular Motion","WPE","Center of Mass","Rotational Mechanics",
-"Gravitation","SHM","Calorimetry","Elasticity","Thermal Expansion",
-"Heat Transfer","KTG","Thermodynamics","Wave on String","Sound Waves",
-"Fluid Mechanics","Physical World","Electrostatics","Current Electricity",
-"Capacitance","MEC","Magnetism","EMI","AC","Atomic Structure",
-"Dual Nature","Nuclear Physics","Radioactivity","Ray Optics",
-"EM Waves","Wave Optics","Errors","Semiconductor","Communication System"
-],
-Chemistry:[
-"General Chemistry","Atomic Structure","States of Matter","Thermodynamics",
-"Chemical Equilibrium","Redox Reaction","Ionic Equilibrium","Mole Concept",
-"Thermochemistry","Solid State","Liquid Solution","Chemical Kinetics",
-"Nuclear Chemistry","Radioactivity","Electro Chemistry","Surface Chemistry",
-"Periodic Table","Chemical Bonding","Hydrogen","s-Block","p-Block",
-"Metallurgy","d & f Block","Coordination Compounds","Salt Analysis",
-"IUPAC","GOC","Isomerism","Hydrocarbons","Environmental Chemistry",
-"Optical Isomerism","Halogen Derivative","Alcohol Phenol Ether",
-"Aldehydes Ketones","Carboxylic Acid & Amines","Biomolecules",
-"Polymers","Oxidation Reduction","Chemistry in Everyday Life"
-],
-Maths:[
-"Logarithm","Trigonometric Ratios","Quadratic Equation","Sequence & Series",
-"Trigonometric Equation","Properties of Triangles","Height & Distance",
-"Point","Straight Line","Circle","Parabola","Ellipse","Hyperbola",
-"P & C","Binomial Theorem","Complex Number","Statistics","PMI","MR",
-"Sets","Relation","Function","ITF","Limit","Continuity",
-"Differentiability","MOD","AOD","Indefinite Integration",
-"Definite Integration","Area Under Curve","Differential Equation",
-"Matrices","Determinant","Vectors","3-D","Probability","Linear Programming"
-]
-};
+const defaultData={
+physics:["U & D","Vectors","Kinematics-1D","Kinematics-2D","NLM","Friction","Circular motion","WPE","Center of Mass","Rotational Mechanics","Gravitation","SHM","Calorimetry","Elasticity","Thermal Expansion","Heat transfer","KTG","Thermodynamics","Wave on string","Sound waves","Fluid Mechanics","Physical World","Electrostatics","Current Electricity","Capacitance","MEC","Magnetism","EMI","AC","Atomic Structure","Dual Nature","Nuclear physics","Radioactivity","Ray Optics","EM Waves","Wave Optics","Errors","Semiconductor","Communication System"],
+chemistry:["General Chemistry","Atomic Structure","States of Matter","Thermodynamics","Chemical Equilibrium","Redox Reaction","Ionic Equilibrium","Mole Concept","Thermochemistry","The Solid State","Liquid Solution","Chemical Kinetics","Nuclear Chemistry","Radioactivity","Electro Chemistry","Surface Chemistry","Periodic Table","Chemical Bonding","Hydrogen","s-Block Elements","p-Block Elements","Metallurgy","d & f Block","Coordination Compounds","Salt Analysis","IUPAC","GOC","Isomerism","Hydrocarbons","Environmental Chemistry","Optical Isomerism","Halogen Derivative","Alcohol, Phenol, Ether","Aldehydes, Ketones","Carboxylic Acids & Amines","Biomolecules","Polymers","Oxidation Reduction","Chem. in Everyday Life"],
+maths:["Logarithm","Trigonometric Ratios & Identities","Quadratic Equation","Sequence & Series","Trigonometric Equation","Properties of Triangles","Height and Distance","Point","Straight Line","Circle","Parabola","Ellipse","Hyperbola","P & C","Binomial Theorem","Complex Number","Statistics","PMI","MR","Sets","Relation","Function","ITF","Limit","Continuity","Differentiability","MOD (Diff.)","AOD","Indefinite Integration","Definite Integration","Area Under Curve","Differential Equation","Matrices","Determinant","Vectors","3-Dimensional","Probability","Linear Programming"]};
 
-const box=document.getElementById("subjects");
+let data=JSON.parse(localStorage.getItem('chaptersData'))||defaultData;
+let currentSub="";
 
-Object.keys(syllabus).forEach(subject=>{
-  const sec=document.createElement("div");
-  sec.className=`section ${subject.toLowerCase()}`;
-  sec.innerHTML=`<h2>${subject}</h2>
-  <div class="progress"><span id="${subject}-bar"></span></div>`;
+// Save data
+function save(){localStorage.setItem('chaptersData',JSON.stringify(data))}
 
-  syllabus[subject].forEach((ch,i)=>{
-    sec.innerHTML+=`
-      <label class="chapter">
-        <input type="checkbox" id="${subject+i}">
-        <span>${i+1}. ${ch}</span>
-      </label>`;
+// Open subject page
+function openSub(s){
+  currentSub=s;
+  home.classList.add('hidden');
+  subject.classList.remove('hidden');
+  subTitle.innerText=s.toUpperCase();
+  renderChapters();
+}
+
+// Render chapters
+function renderChapters(){
+  const box=document.getElementById('chapters');
+  box.innerHTML="";
+  data[currentSub].forEach((ch,i)=>{
+    const row=document.createElement('div');
+    row.className='chapter-row';
+    const name=document.createElement('span');
+    name.innerHTML=`<span class="chapter-number">${i+1}</span> ${ch}`;
+    const cb=document.createElement('input');
+    cb.type='checkbox';
+    cb.checked=localStorage.getItem(currentSub+ch)==='1';
+    cb.onchange=()=>{localStorage.setItem(currentSub+ch,cb.checked?'1':'');updateProgress(); renderChart();};
+    row.append(name,cb);
+    box.append(row);
   });
+}
 
-  box.appendChild(sec);
-});
-</script>
+// Go back home
+function goHome(){subject.classList.add('hidden');home.classList.remove('hidden');updateProgress(); renderChart();}
 
-<!-- SERVICE WORKER REGISTRATION -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+// Update progress bars
+function updateProgress(){
+  [['physics','pBar','pText'],['chemistry','cBar','cText'],['maths','mBar','mText']].forEach(([s,b,t])=>{
+    let done=0;
+    data[s].forEach(c=>{if(localStorage.getItem(s+c)==='1')done++});
+    let pct=Math.round(done/data[s].length*100)||0;
+    document.getElementById(b).style.width=pct+'%';
+    document.getElementById(t).innerText=`${done}/${data[s].length} chapters (${pct}%)`;
+  });
+}
+
+// Reset single subject
+function resetSubject(s){data[s].forEach(c=>localStorage.removeItem(s+c));updateProgress(); renderChart();}
+
+// Reset all
+function resetAll(){if(confirm('Are you sure you want to reset all progress?')){localStorage.clear();location.reload()}}
+
+// Doughnut chart
+function renderChart(){
+  const ctx=document.getElementById('completionChart').getContext('2d');
+  const chartData={
+    labels:['Physics','Chemistry','Maths'],
+    datasets:[{
+      data:[
+        Math.round(data.physics.filter(c=>localStorage.getItem('physics'+c)==='1').length/data.physics.length*100),
+        Math.round(data.chemistry.filter(c=>localStorage.getItem('chemistry'+c)==='1').length/data.chemistry.length*100),
+        Math.round(data.maths.filter(c=>localStorage.getItem('maths'+c)==='1').length/data.maths.length*100)
+      ],
+      backgroundColor:['#6366f1','#22c55e','#d946ef'],
+      borderWidth:2
+    }]
+  };
+  if(window.completionChart) window.completionChart.destroy();
+  window.completionChart=new Chart(ctx,{type:'doughnut',data:chartData,options:{cutout:'60%',plugins:{legend:{position:'bottom'}}}});
+}
+
+// Initial render
+updateProgress();
+renderChart();
+
+// Register service worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      console.log('SW Registered',reg);
+    }).catch(err=>console.log('SW registration failed',err));
+  });
 }
 </script>
-
 </body>
 </html>
