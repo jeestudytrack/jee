@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Tracker</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Gentle+Calligraphy&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg:#0b1020;
+  --card:#111827;
+  --border:#1f2937;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+
+  --phy:#6366f1;
+  --chem:#22c55e;
+  --math:#f59e0b;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:linear-gradient(180deg,#020617,#0b1020);
+  font-family:'Poppins',sans-serif;
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  padding:22px;
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:0.5px;
+}
+
+/* QUOTE (ONLY calligraphy) */
+.quote{
+  margin:28px 20px;
+  padding:28px;
+  border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));
+  border:1px solid var(--border);
+  text-align:center;
+  font-family:'Gentle Calligraphy',cursive;
+  font-size:36px;
+  line-height:1.6;
+  color:#f8fafc;
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* SUBJECT CARD */
+.section{
+  margin:18px;
+  padding:18px;
+  border-radius:22px;
+  background:linear-gradient(180deg,#111827,#0f172a);
+  border:1px solid var(--border);
+  box-shadow:0 18px 45px rgba(0,0,0,0.45);
+}
+
+.section h2{
+  margin:0 0 14px;
+  font-size:18px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* Subject color dots */
+.section h2::before{
+  content:'';
+  width:10px;
+  height:10px;
+  border-radius:50%;
+}
+
+.section.physics h2::before{background:var(--phy)}
+.section.chemistry h2::before{background:var(--chem)}
+.section.maths h2::before{background:var(--math)}
+
+/* PROGRESS BAR */
+.progress{
+  height:8px;
+  background:#1f2937;
+  border-radius:999px;
+  overflow:hidden;
+  margin-bottom:16px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#6366f1,#22d3ee);
+  transition:width 0.35s ease;
+}
+
+/* CHAPTER */
+.chapter{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:8px 0;
+  font-size:14px;
+  color:#e5e7eb;
+}
+
+.chapter input{
+  accent-color:#818cf8;
+  transform:scale(1.15);
+  margin-top:2px;
+}
+
+.chapter span{
+  line-height:1.45;
+}
+
+/* GRAPH */
+.chartBox{
+  margin:28px 20px 40px;
+  padding:22px;
+  border-radius:24px;
+  background:linear-gradient(180deg,#111827,#0f172a);
+  border:1px solid var(--border);
+  box-shadow:0 18px 45px rgba(0,0,0,0.45);
+}
+</style>
+</head>
+
+<body>
+
+<header>📘 Study Tracker</header>
+
+<div class="quote">
+“You can't go back and change the beginning,<br>
+but you can start where you are and change the ending.”
+</div>
+
+<div id="subjects"></div>
+
+<div class="chartBox">
+  <canvas id="completionChart"></canvas>
+</div>
+
+<script>
+const data={
+Physics:[
+"U & D","Vectors","Kinematics-1D","Kinematics-2D","NLM","Friction",
+"Circular Motion","WPE","Center of Mass","Rotational Mechanics",
+"Gravitation","SHM","Calorimetry","Elasticity","Thermal Expansion",
+"Heat Transfer","KTG","Thermodynamics","Wave on String","Sound Waves",
+"Fluid Mechanics","Physical World","Electrostatics","Current Electricity",
+"Capacitance","MEC","Magnetism","EMI","AC","Atomic Structure",
+"Dual Nature","Nuclear Physics","Radioactivity","Ray Optics",
+"EM Waves","Wave Optics","Errors","Semiconductor","Communication System"
+],
+Chemistry:[
+"General Chemistry","Atomic Structure","States of Matter","Thermodynamics",
+"Chemical Equilibrium","Redox Reaction","Ionic Equilibrium","Mole Concept",
+"Thermochemistry","Solid State","Liquid Solution","Chemical Kinetics",
+"Nuclear Chemistry","Radioactivity","Electro Chemistry","Surface Chemistry",
+"Periodic Table","Chemical Bonding","Hydrogen","s-Block","p-Block",
+"Metallurgy","d & f Block","Coordination Compounds","Salt Analysis",
+"IUPAC","GOC","Isomerism","Hydrocarbons","Environmental Chemistry",
+"Optical Isomerism","Halogen Derivative","Alcohol Phenol Ether",
+"Aldehydes Ketones","Carboxylic Acid & Amines","Biomolecules",
+"Polymers","Oxidation Reduction","Chemistry in Everyday Life"
+],
+Maths:[
+"Logarithm","Trigonometric Ratios","Quadratic Equation","Sequence & Series",
+"Trigonometric Equation","Properties of Triangles","Height & Distance",
+"Point","Straight Line","Circle","Parabola","Ellipse","Hyperbola",
+"P & C","Binomial Theorem","Complex Number","Statistics","PMI","MR",
+"Sets","Relation","Function","ITF","Limit","Continuity",
+"Differentiability","MOD","AOD","Indefinite Integration",
+"Definite Integration","Area Under Curve","Differential Equation",
+"Matrices","Determinant","Vectors","3-D","Probability","Linear Programming"
+]
+};
+
+const container=document.getElementById("subjects");
+
+Object.keys(data).forEach(subject=>{
+  const sec=document.createElement("div");
+  sec.className=`section ${subject.toLowerCase()}`;
+  sec.innerHTML=`<h2>${subject}</h2>
+  <div class="progress"><span id="${subject}-bar"></span></div>`;
+  data[subject].forEach((c,i)=>{
+    const id=subject+i;
+    sec.innerHTML+=`
+      <label class="chapter">
+        <input type="checkbox" id="${id}">
+        <span>${i+1}. ${c}</span>
+      </label>`;
+  });
+  container.appendChild(sec);
+});
+</script>
+
+</body>
+</html>
