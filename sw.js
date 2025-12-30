@@ -1,29 +1,19 @@
-const CACHE_NAME = "jee-tracker-v1";
+const cacheName = 'jee-tracker-v1';
+const filesToCache = [
+  './',
+  './index.html',
+  './manifest.json',
+  'https://cdn.jsdelivr.net/npm/chart.js',
+];
 
-/* Install new service worker immediately */
-self.addEventListener("install", event => {
-  self.skipWaiting();
-});
-
-/* Activate and remove old caches */
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      );
-    })
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(cacheName).then(cache => cache.addAll(filesToCache))
   );
-  self.clients.claim();
 });
 
-/* Fetch latest files first, fallback to cache only if offline */
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    fetch(event.request)
-      .then(response => response)
-      .catch(() => caches.match(event.request))
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(response => response || fetch(e.request))
   );
 });
